@@ -2,7 +2,6 @@ package provider
 
 import (
 	"context"
-	"errors"
 	"reflect"
 	"sync"
 	"time"
@@ -164,8 +163,8 @@ func (p *HPAProvider) updateHPAs() error {
 				c, err := p.collectorFactory.NewCollector(&hpa, config, interval)
 				if err != nil {
 
-					// Only log when it's not a PluginNotFoundError AND flag disregardIncompatibleHPAs is true
-					if !(errors.Is(err, &collector.PluginNotFoundError{}) && p.disregardIncompatibleHPAs) {
+					// Only log when flag disregardIncompatibleHPAs is true
+					if !p.disregardIncompatibleHPAs {
 						p.recorder.Eventf(&hpa, apiv1.EventTypeWarning, "CreateNewMetricsCollector", "Failed to create new metrics collector: %v", err)
 					}
 
